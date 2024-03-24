@@ -57,3 +57,79 @@ export default class DisplayAccountContactDetails extends LightningElement {
 }
 
 experiencecloudportfolio@sfdc.com
+
+
+code 2:-----------------------------------------------------------------------------------------------------------------------------------------------
+
+<!-- createAccountContact.html -->
+<template>
+    <lightning-card title="Create Account and Contact">
+        <div class="slds-m-around_medium">
+            <lightning-input label="Account Name" value={accountName} onchange={handleAccountChange}></lightning-input>
+            <lightning-input label="Contact First Name" value={contactFirstName} onchange={handleContactFirstNameChange}></lightning-input>
+            <lightning-input label="Contact Last Name" value={contactLastName} onchange={handleContactLastNameChange}></lightning-input>
+            <lightning-input label="Contact Email" type="email" value={contactEmail} onchange={handleContactEmailChange}></lightning-input>
+            <lightning-button label="Submit" onclick={handleSubmit}></lightning-button>
+        </div>
+        <template if:true={displayDetails}>
+            <div class="slds-m-around_medium">
+                <p>Account Name: {accountId}</p>
+                <p>Contact First Name: {contactId}</p>
+                <p>Contact Last Name: {contactLastName}</p>
+                <p>Contact Email: {contactEmail}</p>
+            </div>
+        </template>
+    </lightning-card>
+</template>
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+js
+
+// createAccountContact.js
+import { LightningElement, track } from 'lwc';
+import createAccount from '@salesforce/apex/AccountController.createAccount';
+import createContact from '@salesforce/apex/ContactController.createContact';
+
+export default class CreateAccountContact extends LightningElement {
+    @track accountName = '';
+    @track contactFirstName = '';
+    @track contactLastName = '';
+    @track contactEmail = '';
+    @track displayDetails = false;
+    @track accountId = '';
+    @track contactId = '';
+
+    handleAccountChange(event) {
+        this.accountName = event.target.value;
+    }
+
+    handleContactFirstNameChange(event) {
+        this.contactFirstName = event.target.value;
+    }
+
+    handleContactLastNameChange(event) {
+        this.contactLastName = event.target.value;
+    }
+
+    handleContactEmailChange(event) {
+        this.contactEmail = event.target.value;
+    }
+
+    async handleSubmit() {
+        try {
+            const accountRecord = await createAccount({ Name: this.accountName });
+            const contactRecord = await createContact({ 
+                FirstName: this.contactFirstName, 
+                LastName: this.contactLastName,
+                Email: this.contactEmail,
+                AccountId: accountRecord.Id
+            });
+            this.accountId = accountRecord.Id;
+            this.contactId = contactRecord.Id;
+            this.displayDetails = true;
+        } catch (error) {
+            console.error('Error creating account and contact: ', error);
+            // Handle error
+        }
+    }
+}
+
