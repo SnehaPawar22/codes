@@ -1,1 +1,58 @@
+ <lightning-card title="Display Account and Contact Details">
+        <div class="slds-m-around_medium">
+            <lightning-input label="Account Name" value={accountName} onchange={handleAccountChange}></lightning-input>
+            <lightning-input label="Contact First Name" value={contactFirstName} onchange={handleContactFirstNameChange}></lightning-input>
+            <lightning-input label="Contact Last Name" value={contactLastName} onchange={handleContactLastNameChange}></lightning-input>
+            <lightning-input label="Contact Email" type="email" value={contactEmail} onchange={handleContactEmailChange}></lightning-input>
+            <lightning-button label="Submit" onclick={handleSubmit}></lightning-button>
+        </div>
+        <template if:true={displayDetails}>
+            <div class="slds-m-around_medium">
+                <p>Account Name: {accountId}</p>
+                <p>Contact First Name: {contactId}</p>
+                <p>Contact Last Name: {contactLastName}</p>
+                <p>Contact Email: {contactEmail}</p>
+            </div>
+        </template>
+    </lightning-card>
+
+js
+
+// displayAccountContactDetails.js
+import { LightningElement, track } from 'lwc';
+
+export default class DisplayAccountContactDetails extends LightningElement {
+    @track accountName = '';
+    @track contactFirstName = '';
+    @track contactLastName = '';
+    @track contactEmail = '';
+    @track displayDetails = false;
+    @track accountId = '';
+    @track contactId = '';
+
+    handleAccountChange(event) {
+        this.accountName = event.target.value;
+    }
+
+    handleContactFirstNameChange(event) {
+        this.contactFirstName = event.target.value;
+    }
+
+    handleContactLastNameChange(event) {
+        this.contactLastName = event.target.value;
+    }
+
+    handleContactEmailChange(event) {
+        this.contactEmail = event.target.value;
+    }
+
+    handleSubmit() {
+        // Perform submission logic here, like creating records in Salesforce
+        // For demonstration purposes, let's just display the input values
+        this.displayDetails = true;
+        // Assume you have retrieved accountId and contactId from Salesforce after record creation
+        this.accountId = 'Account Id from Salesforce';
+        this.contactId = 'Contact Id from Salesforce';
+    }
+}
 
