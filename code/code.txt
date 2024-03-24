@@ -133,3 +133,40 @@ export default class CreateAccountContact extends LightningElement {
     }
 }
 
+apex class----------------------------------
+// AccountController.cls
+public with sharing class AccountController {
+    @AuraEnabled(cacheable=false)
+    public static Account createAccount(String Name) {
+        Account acc = new Account(Name = Name);
+        try {
+            insert acc;
+        } catch(Exception e) {
+            // Handle exception as per requirement
+            System.debug('Error creating account: ' + e.getMessage());
+        }
+        return acc;
+    }
+}
+
+apex class2----------------------------------------
+// ContactController.cls
+public with sharing class ContactController {
+    @AuraEnabled(cacheable=false)
+    public static Contact createContact(String FirstName, String LastName, String Email, Id AccountId) {
+        Contact con = new Contact(
+            FirstName = FirstName,
+            LastName = LastName,
+            Email = Email,
+            AccountId = AccountId
+        );
+        try {
+            insert con;
+        } catch(Exception e) {
+            // Handle exception as per requirement
+            System.debug('Error creating contact: ' + e.getMessage());
+        }
+        return con;
+    }
+}
+
